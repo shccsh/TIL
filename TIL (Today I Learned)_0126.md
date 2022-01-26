@@ -25,7 +25,7 @@
    - `git add .` : 전부 다 올리기
    - Working Directory에 있는 파일을 Staging Area로 올리는 명령어
 
-4. `git zommit -m "메시지"` : 찰칵! 후 저장소
+4. `git commit -m "메시지"` : 찰칵! 후 저장소
    - Staging Area에 올라온 파일의 변경 사항을 하나의 버전(커밋)으로 저장하는 명령어
    - ``커밋 메세지``는 현재 변경 사항들을 잘 나타낼 수 있도록 의미있게 작성하는 것을 권장
 
