@@ -1,5 +1,9 @@
 # TIL (Today I Learned)
 
+[TOC]
+
+
+
 ## 1. CLI
 
 ### (1) 경로
@@ -197,12 +201,6 @@
 
 
 ### (3) 실습
-[TOC]
-
-
-
-
-
 #### Python
 
 
@@ -270,6 +268,7 @@
 4. `git commit -m "메시지"` : 찰칵! 후 저장소
    - Staging Area에 올라온 파일의 변경 사항을 하나의 버전(커밋)으로 저장하는 명령어
    - ``커밋 메세지``는 현재 변경 사항들을 잘 나타낼 수 있도록 의미있게 작성하는 것을 권장
+   - 커밋 메시지 잘못 넣었을 때는 `git commit --amend` 입력하면 빔에디터가 뜨고, i(insert) 누르고 수정할 메시지명 입력 -> ESC 누르고, `:wq` 입력
 5. `git log` : 버전들 확인할래!
    - 커밋의 내역(`ID, 작성자, 시간, 메세지 등`)을 조회할 수 있는 명령어
    - `git log --oneline` 을 기입하면 해쉬값을 알려준다. 그걸 아래 체크아웃에 쓰기로 하자.
@@ -314,7 +313,7 @@
      $ git push origin master        # Github에 올리기
      ``````
 
-     ![image-20220127114429489](TIL (Today I Learned)_0126.assets/image-20220127114429489.png)
+     ![image-20220127114429489](TIL_Today_I_Learned.assets/image-20220127114429489.png)
 
    - 위의 절차를 거치면, hub에 a. txt가 올라가지게 된다.
 
@@ -369,7 +368,7 @@
 
    - 로컬의 내용과 원격저장소의 내용이 다른 상황에서 작업이 이뤄지기 때문에 발생
 
-     ![image-20220127122915297](TIL (Today I Learned)_0126.assets/image-20220127122915297.png)
+     ![image-20220127122915297](TIL_Today_I_Learned.assets/image-20220127122915297.png)
 
 2. 해결 방법
 
@@ -377,29 +376,38 @@
 
    - 저장소에서 작업한 내용, 로컬에서 작업한 내용이 같이 보여진다.
 
-     ![image-20220127122951691](TIL (Today I Learned)_0126.assets/image-20220127122951691.png)
+     ![image-20220127122951691](TIL_Today_I_Learned.assets/image-20220127122951691.png)
 
    - 원하는 것을 선택해서 하나만 보여지게 해도 되고, 둘다 보여지게 해도 되고, 새롭게 수정을 해도 된다.
 
    - 그리고, 현재 시점에는 아래와 같이 터미널 부분이 master|MERGING 으로 된 것을 알 수 있다.
 
-     ![image-20220127123236508](TIL (Today I Learned)_0126.assets/image-20220127123236508.png)
+     ![image-20220127123236508](TIL_Today_I_Learned.assets/image-20220127123236508.png)
 
    - 수정을 하고 나서 다시 `git add .` , `git commit -m "메시지"` 를 하면 정상적으로 돌아오게 된다.
 
-     ![image-20220127123527923](TIL (Today I Learned)_0126.assets/image-20220127123527923.png)
-
-   
+     ![image-20220127123527923](TIL_Today_I_Learned.assets/image-20220127123527923.png)
 
 
+#### 3) Branch
 
+> Branch는 나뭇가지라는 뜻의 영어 단어로 나뭇가지처럼 여러 갈래로 작업 공간을 나누어 독립적으로 작업 할 수 있도록 도와주는 Git의 도구 (쉽게 이해하면 테스트 서버와 같은 개념인듯)
 
+##### 1. 명령어
 
+1. `git branch` : branch 위치 확인
+2. `git branch {{이름}}` : branch 생성
+3. `git switch {{브랜치명}}` : branch명으로 이동
+4. `git switch -c {{이름}}` : branch 생성 후, 해당 branch로 이동
+5. `git merge {{합치고 싶은 브랜치명}}` : branch를 마스터로 합치기(마스터에서 입력)
+6. `git branch -d {{지우고 싶은 브랜치명}}` : 쓸모없어진 branch 삭제
 
+##### 2. 충돌
 
-### 
+- branch 생성 후, branch와 master에서 각각 수정 후 merge할 때 충돌이 발생한다.
 
+- 충돌 시, 해결
 
+  ![image-20220127155218287](TIL_Today_I_Learned.assets/image-20220127155218287.png)
 
-
-
+- 원하는 내용으로 __수정 후 저장__, 동일하게 `git add .`, `git commit -m "메시지"` 를 입력
