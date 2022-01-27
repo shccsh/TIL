@@ -1,4 +1,4 @@
-# TIL (Today I Learned)_0126
+# TIL (Today I Learned)_Github
 
 
 
@@ -45,3 +45,110 @@
     - 생성된 로컬 저장소는 `git init` 과 `git remote add` 가 이미 수행되어 있다.
 11. `git pull` : 원격 저장소의 변경 사항을 가져와서, 로컬 저장소를 업데이트하는 명령어
     - `git pull <저장소 이름> <브랜치 이름>` 형태로 입력
+
+### 1) clone, pull, push Relay-test
+
+1. 규칙
+
+   - 두개의 컴퓨터가 있다고 가정(다른 공간)
+
+     ex) acomputer(집 컴퓨터), bcomputer(회사 컴퓨터)
+
+   - 집에서 작업을 하다, 회사에서 작업을 하는 상황
+
+2. 집에서 작업하고 깃허브에 올리기 
+
+   - Github에서 Relay-test 이름의 `Repositories(원격저장소)`생성
+
+   - `acomputer 폴더` 에서  vscode를 열고, 아래와 같은 절차 진행
+
+     ``````bash
+     $ git init                      # 관리 시작
+     $ touch a.txt                   # a.txt 문서 생성
+     $ git add .                     # 로컬에서 working directory에서 staging Area로 올림
+     $ git commit -m "집에서 작성"     # 커밋(버전)으로 저장
+     $ git remote add origin https://github.com/shccsh/relay-test.git   # 아래 이미지 영역에서 URL을 받아 브릿지 잇기
+     $ git push origin master        # Github에 올리기
+     ``````
+
+     ![image-20220127114429489](TIL (Today I Learned)_0126.assets/image-20220127114429489.png)
+
+   - 위의 절차를 거치면, hub에 a. txt가 올라가지게 된다.
+
+3. 회사에서 집에서 작업한 내용을 복제하기
+
+   - 홈폴더 또는 작업하고자 하는 폴더에서 Bash를 키고 아래 내용을 입력하여 복제한다.
+
+     ``````bash
+     $ git clone https://github.com/shccsh/relay-test.git
+     ``````
+
+   - 복제하면 `Relay-test` 폴더가 만들어지고 이를 bcomputer로 이름을 수정한다.(위의 규칙)
+
+   - 복제된 폴더는 init과 remote 브릿지 연결까지 되어있다.
+
+   - 복제할 때 마지막에 폴더명을 넣으면 해당 폴더명으로 생성되기도 한다.
+
+     ``````bash
+     $ git clone https://github.com/shccsh/relay-test.git bcomputer
+     ``````
+
+4. 회사에서 추가 작업하기
+
+   - 3번에서 만들어진 폴더에서 vscode를 열고, 작업을 진행한다.
+
+   - a.txt를 수정하는 작업 진행 후, 2번의 작업을 다시 진행
+
+     ``````bash
+     # a.txt 수정 후,
+     $ git add .
+     $ git commit -m "회사에서 작성"
+     $ git push origin master
+     ``````
+
+5. 집에서 회사에서 작업한 내용 불러오기
+
+   - 집에서 작업한 로컬과 회사에서 작업해서 hub에 올라간 내용은 다르기 때문에, hub에 올라간 내용을 불러와야한다.
+
+   - 불러올 때는 `pull`을 사용한다.
+
+     ``````bash
+     $ git pull origin master
+     ``````
+
+   - 이어서 추가 작업을 진행 후, 다시 4번의 올리는 작업을 진행한다.
+
+### 2) 충돌
+
+1. 발생 원인
+
+   - 로컬이 아닌 원격저장소에서 직접 수정을 하고, 로컬에서 수정을 한 내용을 올릴 경우 충돌이 발생한다.
+
+   - 로컬의 내용과 원격저장소의 내용이 다른 상황에서 작업이 이뤄지기 때문에 발생
+
+     ![image-20220127122915297](TIL (Today I Learned)_0126.assets/image-20220127122915297.png)
+
+2. 해결 방법
+
+   - `$ git pull origin master` 를 입력
+
+   - 저장소에서 작업한 내용, 로컬에서 작업한 내용이 같이 보여진다.
+
+     ![image-20220127122951691](TIL (Today I Learned)_0126.assets/image-20220127122951691.png)
+
+   - 원하는 것을 선택해서 하나만 보여지게 해도 되고, 둘다 보여지게 해도 되고, 새롭게 수정을 해도 된다.
+
+   - 그리고, 현재 시점에는 아래와 같이 터미널 부분이 master|MERGING 으로 된 것을 알 수 있다.
+
+     ![image-20220127123236508](TIL (Today I Learned)_0126.assets/image-20220127123236508.png)
+
+   - 수정을 하고 나서 다시 `git add .` , `git commit -m "메시지"` 를 하면 정상적으로 돌아오게 된다.
+
+     ![image-20220127123527923](TIL (Today I Learned)_0126.assets/image-20220127123527923.png)
+
+   
+
+
+
+
+
