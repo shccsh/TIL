@@ -411,3 +411,16 @@
   ![image-20220127155218287](TIL_Today_I_Learned.assets/image-20220127155218287.png)
 
 - 원하는 내용으로 __수정 후 저장__, 동일하게 `git add .`, `git commit -m "메시지"` 를 입력
+
+### (3) 풀리퀘스트
+
+협업을 하는 형태로 아래 이미지와 같이 진행이 된다.
+
+
+
+![image-20220127162143141](TIL_Today_I_Learned.assets/image-20220127162143141.png)
+
+- 처음 Hub의 master 파일이 생성이 되고, 이를 각자의 Local로 내려 받는다.
+- 이후, 작업을 할 때는 Local에서 별도의 branch를 만들어서 작업을 한다.
+- branch 작업 후, hub의 master에서 branch를 생성하고, 해당 branch에 내용을 넣고 master에 merge한다.
+- 최종적으로 완료된 hub에서 작업이 된 파일을 local의 master로 받는다.
