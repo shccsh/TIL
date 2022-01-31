@@ -422,5 +422,268 @@ X_train, X_test, y_train, y_test = train_test_split(iris_data.data, iris_data.ta
 
    테스트 데이터 세트 정확도: 0.9667
 
+## 5. 데이터 전처리
 
+- 머신러닝에 학습을 하기 전, 데이터 전처리 과정을 거쳐 보다 좋은 예측 모델을 만들어야 한다.
+- 데이터 전처리에는 결손값(Null/NaN) 처리 / 이상치 제거 등의 과정들을 거치게 된다.
 
+### 1) 데이터 인코딩
+
+#### (1) 레이블 인코딩(Label encoding)
+
+![image-20220131203618764](TIL_ML_sklearn_basic.assets/image-20220131203618764.png)
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+items = ['TV','냉장고','전자렌지','컴퓨터','선풍기','선풍기','믹서','믹서']
+
+# LabelEncoder 클래스를 encoder 객체로 생성한 후
+encoder = LabelEncoder()
+
+# fit은 transform 수행 전 틀을 맞춰주는 역할
+encoder.fit(items)
+
+# encoder.transform( ) 으로 label 인코딩 수행. 
+labels = encoder.transform(items)
+print('인코딩 변환값:', labels)
+```
+
+``````
+인코딩 변환값: [0 1 4 5 3 3 2 2]
+``````
+
+```python
+print('인코딩 클래스:', encoder.classes_)
+print('디코딩 원본 값:', encoder.inverse_transform([0, 1, 4, 5, 3, 3, 2, 2]))
+```
+
+```
+인코딩 클래스: ['TV' '냉장고' '믹서' '선풍기' '전자렌지' '컴퓨터']
+디코딩 원본 값: ['TV' '냉장고' '전자렌지' '컴퓨터' '선풍기' '선풍기' '믹서' '믹서']
+```
+
+#### (2) 원-핫 인코딩(One-Hot encoding)
+
+![image-20220131204123735](TIL_ML_sklearn_basic.assets/image-20220131204123735.png)
+
+##### 1. sklearn에서의 원핫인코딩
+
+``````
+<sklearn에서의 원핫 인코딩은 좀 복잡하다>
+첫번째, 먼저 숫자값으로 변환을 위해 LabelEncoder로 변환
+두번째, 2차원 데이터로 변환 (reshape 활용)
+세번째, 원-핫 인코딩을 적용
+``````
+
+```python
+from sklearn.preprocessing import OneHotEncoder
+import numpy as np
+
+items=['TV','냉장고','전자렌지','컴퓨터','선풍기','선풍기','믹서','믹서']
+```
+
+1. 첫번째, 먼저 숫자값으로 변환을 위해 LabelEncoder로 변환
+
+   ```python
+   encoder = LabelEncoder()
+   encoder.fit(items)
+   labels = encoder.transform(items)
+   labels
+   ```
+
+   ``````
+   array([0, 1, 4, 5, 3, 3, 2, 2])
+   ``````
+
+2. 두번째, 2차원 데이터로 변환 (reshape 활용)
+
+   ```python
+   labels = labels.reshape(-1, 1)
+   labels
+   ```
+
+   ``````
+   array([[0],
+          [1],
+          [4],
+          [5],
+          [3],
+          [3],
+          [2],
+          [2]])
+   ``````
+
+3. 세번째, 원-핫 인코딩을 적용
+
+   ```python
+   oh_encoder = OneHotEncoder()
+   oh_encoder.fit(labels)
+   oh_labels = oh_encoder.transform(labels)
+   
+   print('원-핫 인코딩 데이터')
+   print(oh_labels.shape)
+   oh_labels.toarray()
+   ```
+
+   ```
+   원-핫 인코딩 데이터
+   (8, 6)
+   ```
+
+   Out[27]:
+
+   ```
+   array([[1., 0., 0., 0., 0., 0.],
+          [0., 1., 0., 0., 0., 0.],
+          [0., 0., 0., 0., 1., 0.],
+          [0., 0., 0., 0., 0., 1.],
+          [0., 0., 0., 1., 0., 0.],
+          [0., 0., 0., 1., 0., 0.],
+          [0., 0., 1., 0., 0., 0.],
+          [0., 0., 1., 0., 0., 0.]])
+   ```
+
+##### 2. 판다스의 원핫 인코딩
+
+``````
+판다스의 get_dummies 함수를 이용하면 쉽게 원핫 인코딩이 가능하다
+``````
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({'item':['TV','냉장고','전자렌지','컴퓨터','선풍기','선풍기','믹서','믹서'] })
+
+pd.get_dummies(df)
+```
+
+![image-20220131204638190](TIL_ML_sklearn_basic.assets/image-20220131204638190.png)
+
+#### 2) 피처 스케일링과 정규화
+
+- 스케일링은 변수의 값 범위를 일정한 수준으로 맞춰주는 작업으로, 변수 갑의 범위나 단위가 달라서 발생하게 되는 문제를 예방할 수 있다.
+- 스케일링에는 표준화와 정규화가 있다.
+  - 표준화 : 데이터의 피처 각각이 평균이 0이고, 분산이 1인 가우시안 정규 분포를 가진 값으로 변환하는 것을 의미
+  - 정규화 : 서로 다른 피처의 크기를 통일하기 위해 크기를 변환해주는 개념
+
+##### 1. StandardScaler(표준화)
+
+1. 데이터 로드 후, 평균 값, 분산 값 확인하기
+
+   ```python
+   from sklearn.datasets import load_iris
+   import pandas as pd
+   
+   # 붓꽃 데이터셋을 로딩하고 DataFrame으로 변환
+   iris = load_iris()
+   iris_data = iris.data
+   
+   iris_df = pd.DataFrame(data = iris_data, columns = iris.feature_names)
+   
+   print('feature 들의 평균 값')
+   print(iris_df.mean(), '\n')
+   
+   print('feature 들의 분산 값')
+   print(iris_df.var())
+   ```
+
+   ``````
+   feature 들의 평균 값
+   sepal length (cm)    5.843333
+   sepal width (cm)     3.057333
+   petal length (cm)    3.758000
+   petal width (cm)     1.199333
+   dtype: float64 
+   
+   feature 들의 분산 값
+   sepal length (cm)    0.685694
+   sepal width (cm)     0.189979
+   petal length (cm)    3.116278
+   petal width (cm)     0.581006
+   dtype: float64
+   ``````
+
+2. 표준화 - StandardScaler로 데이터셋 변환, fit() - transform() 활용
+
+   ```python
+   from sklearn.preprocessing import StandardScaler
+   
+   # StandardScaler객체 생성
+   scaler = StandardScaler()
+   
+   # StandardScaler 로 데이터 셋 변환. fit( ) 과 transform( ) 호출.  
+   scaler.fit(iris_df)
+   iris_scaled = scaler.transform(iris_df)
+   ```
+
+3. 표준화 이후, 평균값과 분산값
+
+   ```python
+   # transform( )시 scale 변환된 데이터 셋이 numpy ndarry로 반환되어 이를 DataFrame으로 변환
+   iris_df_scaled = pd.DataFrame(data=iris_scaled, columns=iris.feature_names)
+   
+   print('feature 들의 평균 값')
+   print(iris_df_scaled.mean(), '\n')
+   
+   print('feature 들의 분산 값')
+   print(iris_df_scaled.var())
+   ```
+
+   ``````
+   feature 들의 평균 값
+   sepal length (cm)   -1.690315e-15
+   sepal width (cm)    -1.842970e-15
+   petal length (cm)   -1.698641e-15
+   petal width (cm)    -1.409243e-15
+   dtype: float64 
+   
+   feature 들의 분산 값
+   sepal length (cm)    1.006711
+   sepal width (cm)     1.006711
+   petal length (cm)    1.006711
+   petal width (cm)     1.006711
+   dtype: float64
+   ``````
+
+   - 모든 컬럼 값의 평균은 0에 아주 가까운 값으로, 분산은 1에 가까운 값으로 변환
+
+##### 2. MinMaxScaler (정규화)
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+# MinMaxScaler객체 생성
+scaler = MinMaxScaler()
+
+# MinMaxScaler 로 데이터 셋 변환. fit() 과 transform() 호출.  
+scaler.fit(iris_df)
+iris_scaled = scaler.transform(iris_df)
+
+# transform()시 scale 변환된 데이터 셋이 numpy ndarry로 반환되어 이를 DataFrame으로 변환
+iris_df_scaled = pd.DataFrame(data=iris_scaled, columns=iris.feature_names)
+
+print('feature들의 최소 값')
+print(iris_df_scaled.min(), '\n')
+
+print('feature들의 최대 값')
+print(iris_df_scaled.max())
+```
+
+``````
+feature들의 최소 값
+sepal length (cm)    0.0
+sepal width (cm)     0.0
+petal length (cm)    0.0
+petal width (cm)     0.0
+dtype: float64 
+
+feature들의 최대 값
+sepal length (cm)    1.0
+sepal width (cm)     1.0
+petal length (cm)    1.0
+petal width (cm)     1.0
+dtype: float64
+``````
+
+- 모든 피처의 값이 0~1 사이로 변환
